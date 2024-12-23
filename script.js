@@ -1,52 +1,25 @@
 function gameBoard() {
-
-    let board = Array(9).fill("");
-
+    let board = Array(9).fill('');
 
     const putMarker = (box, player) => {
-        if (board[box] === "") {
+        if (board[box] === '') {
             board[box] = player;
         } else {
             console.log('invalid');
         }
     }
-const checkEnd = () => {
-    const winPatterns = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8],
-        [0, 3, 6], [1, 4, 7], [2, 5, 8],
-        [0, 4, 7], [2, 4, 6]
-    ];
+    const getBoard = () => board;
 
-        winPatterns.forEach(array => {
-            const [x, y, z] = array;
-            if(board[x] && board[x] === board[y] && board[y] === board[z] ) {
-                console.log(`${board[x]} wins`);
-                return true;
-            } 
-        });
-
-
-   const isFull = board.every(square => square !== "");
-   if (isFull) {
-     console.log(`It's as draw`);
-     return true;
-   }
-
-   return false;
-};
-
-    const printBoard = () => console.log(board);
-
-    return { putMarker, printBoard, checkEnd };
-
+    return { putMarker, getBoard };
 }
 
-const gameController = (function () {
+const gameController = function () {
     const board = gameBoard();
     let isGameOver = false;
     const player = ['X', 'O'];
-
     let currentPlayer = player[0];
+
+    const getBoard = () => board.getBoard();
 
     const switchPlayer = () => {
         currentPlayer = (currentPlayer === player[0]) ? player[1] : player[0];
@@ -54,74 +27,88 @@ const gameController = (function () {
 
     const getCurrentPlayer = () => currentPlayer;
 
-    const printNewRound = () => {
-        board.printBoard();
-        console.log(`${currentPlayer}'s turn`);
-    };
+    const checkEnd = () => {
+        const state = document.querySelector('#state');
+        boardArr = board.getBoard();
+        const winPatterns = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 7], [2, 4, 6]
+        ];
 
-    const playRound = (box, currentPlayer) => {
-        // put marker
-        board.putMarker(box, currentPlayer);
+        function checkWin(arr) {
+            const [x, y, z] = arr;
+            return (boardArr[x] && boardArr[x] === boardArr[y] && boardArr[y] === boardArr[z]);
+        }
 
-        // check for win
-        isGameOver = board.checkEnd();
-        // switch player
-        if(!isGameOver) {
-        switchPlayer();
-        // print new round
-        printNewRound();
+        const win = winPatterns.some(arr => checkWin(arr));
+        const isFull = boardArr.every(square => square !== '');
+
+        if (win || isFull) {
+            if (win) {
+                state.textContent = `Player ${currentPlayer} wins`;
+            } else {
+                state.textContent = `It's a tie`;
+            }
+            return true;
         } else {
-            console.log(`Game over`);
+            return false;
         }
     };
 
-    return { playRound, printNewRound };
+    const playRound = (box) => {
+        // put marker
+        board.putMarker(box, getCurrentPlayer());
+    
+        // switch player
+        const end = checkEnd();
+        if (!end) {
+            switchPlayer();
+        }
+    }
 
-})();
+    return { getCurrentPlayer, playRound, getBoard, checkEnd };
+};
 
-// const displayController = function () {
-
-// };
-
-// gameController.playRound(0, 'X');
-// gameController.playRound(8, 'O');
-// gameController.playRound(1, 'X');
-// gameController.playRound(7, 'O');
-// gameController.playRound(2, 'X');
-
-// gameController.playRound(0, 'X');
-// gameController.playRound(1, 'O');
-// gameController.playRound(2, 'X');
-// gameController.playRound(3, 'O');
-// gameController.playRound(4, 'X');
-// gameController.playRound(6, 'O');
-// gameController.playRound(7, 'X');
-// gameController.playRound(8, 'O');
-// gameController.playRound(5, 'X');
+const displayController = function () {
+    const game = gameController();
+    const gameboard = document.querySelector('#gameboard');
 
 
+    const updateDisplay = () => {
+        const board = game.getBoard();
+        gameboard.textContent = '';
+        const currentPlayer = game.getCurrentPlayer();
+        const state = document.querySelector('#state');
 
+        // render squares
+        board.forEach((box, index) => {
+            const square = document.createElement('button');
+            square.classList.add('square');
+            square.textContent = `${box}`;
+            square.setAttribute('data', index);
+            gameboard.appendChild(square);
+        });
 
+        const end = game.checkEnd();
 
+        if (!end) {
+            state.textContent = `Player ${currentPlayer}'s turn`;
+        }
+    };
 
-// function Square() {
-//     let value = " ";
+    const SquareClickHandler = (e) => {
+        const index = e.target.getAttribute('data');
+        if (!index) return;
+        game.playRound(index);
+        updateDisplay();
 
-//     const addMarker = (marker) => value = marker;
-//     const getValue = () => value;
+    };
 
-//     return { addMarker, getValue };
-// }
+    gameboard.addEventListener('click', SquareClickHandler);
+    updateDisplay();
 
-// winPatterns.some(array => {
-       
-//     const crossWins = array.every(elem => {
-        
-//         (board.getBoard())[elem] === 'X'
+};
 
-//     });
-//     console.log(crossWins);
-//     if (crossWins) {
-//         console.log('cross wins');
-//     }
-// });
+displayController();
+
