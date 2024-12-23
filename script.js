@@ -93,6 +93,8 @@ const displayController = function () {
 
         if (!end) {
             state.textContent = `Player ${currentPlayer}'s turn`;
+        } else {
+            gameboard.removeEventListener('click', squareClickHandler);
         }
     };
 
