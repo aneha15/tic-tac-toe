@@ -8,19 +8,26 @@ function gameBoard() {
             console.log('invalid');
         }
     }
+    
+    const reset = () => {
+        board = Array(9).fill('');
+    }
+
     const getBoard = () => board;
 
-    return { putMarker, getBoard };
+    return { putMarker, getBoard, reset };
 }
 
-const gameController = function () {
+const gameController = (function () {
     const board = gameBoard();
-    let isGameOver = false;
     const player = ['X', 'O'];
     let currentPlayer = player[0];
 
     const getBoard = () => board.getBoard();
-
+    const reset = () => {
+        board.reset();
+        currentPlayer = player[0];
+    }
     const switchPlayer = () => {
         currentPlayer = (currentPlayer === player[0]) ? player[1] : player[0];
     };
@@ -59,26 +66,21 @@ const gameController = function () {
     const playRound = (box) => {
         // put marker
         board.putMarker(box, getCurrentPlayer());
-
         // switch player
-        const end = checkEnd();
-        if (!end) {
             switchPlayer();
-        } 
     }
 
-    return { getCurrentPlayer, playRound, getBoard, checkEnd };
-};
+    return { getCurrentPlayer, playRound, getBoard, reset, checkEnd };
+})();
 
 const displayController = function () {
-    const game = gameController();
     const gameboard = document.querySelector('#gameboard');
-    const reset = document.querySelector('#reset');
+    const resetBtn = document.querySelector('#reset');
 
     const updateDisplay = () => {
-        const board = game.getBoard();
+        const board = gameController.getBoard();
         gameboard.textContent = '';
-        const currentPlayer = game.getCurrentPlayer();
+        const currentPlayer = gameController.getCurrentPlayer();
         const state = document.querySelector('#state');
         // render squares
         board.forEach((box, index) => {
@@ -89,7 +91,7 @@ const displayController = function () {
             gameboard.appendChild(square);
         });
 
-        const end = game.checkEnd();
+        const end = gameController.checkEnd();
 
         if (!end) {
             state.textContent = `Player ${currentPlayer}'s turn`;
@@ -101,13 +103,18 @@ const displayController = function () {
     const squareClickHandler = (e) => {
         const index = e.target.getAttribute('data');
         if (e.target.textContent !== '' || !index) return;
-
-        game.playRound(index);
+        gameController.playRound(index);
         updateDisplay();
     };
 
     gameboard.addEventListener('click', squareClickHandler);
     updateDisplay();
+
+    resetBtn.addEventListener('click', () => {
+        gameController.reset();
+        updateDisplay();
+        gameboard.addEventListener('click', squareClickHandler);
+    });
 };
 
 displayController();
