@@ -59,12 +59,12 @@ const gameController = function () {
     const playRound = (box) => {
         // put marker
         board.putMarker(box, getCurrentPlayer());
-    
+
         // switch player
         const end = checkEnd();
         if (!end) {
             switchPlayer();
-        }
+        } 
     }
 
     return { getCurrentPlayer, playRound, getBoard, checkEnd };
@@ -73,14 +73,13 @@ const gameController = function () {
 const displayController = function () {
     const game = gameController();
     const gameboard = document.querySelector('#gameboard');
-
+    const reset = document.querySelector('#reset');
 
     const updateDisplay = () => {
         const board = game.getBoard();
         gameboard.textContent = '';
         const currentPlayer = game.getCurrentPlayer();
         const state = document.querySelector('#state');
-
         // render squares
         board.forEach((box, index) => {
             const square = document.createElement('button');
@@ -97,17 +96,16 @@ const displayController = function () {
         }
     };
 
-    const SquareClickHandler = (e) => {
+    const squareClickHandler = (e) => {
         const index = e.target.getAttribute('data');
-        if (!index) return;
+        if (e.target.textContent !== '' || !index) return;
+
         game.playRound(index);
         updateDisplay();
-
     };
 
-    gameboard.addEventListener('click', SquareClickHandler);
+    gameboard.addEventListener('click', squareClickHandler);
     updateDisplay();
-
 };
 
 displayController();
