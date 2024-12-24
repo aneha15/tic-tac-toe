@@ -1,9 +1,14 @@
-body {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
+    flex-direction: column;
+    gap: 35px;
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -12,11 +17,34 @@ body {
 #gameboard {
     width: 600px;
     height: 600px;
-    border: 1px solid black;
     display: grid;
-    grid-template-areas: repeat(1fr, 200px);
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    background-color: pink;
 }
 
 #gameboard > * {
-    border: 2px solid black;
+    background-color: white;
+    color: turquoise;
+    font-weight: 900;
+    border: none;
+    font-size: 120px;
 }
+
+#state {
+    font-size: 35px;
+    color: black;
+}
+
+#reset {
+    border: none;
+    background: none;
+    background-color: lightblue;
+    height: 55px;
+    width: 120px;
+    border-radius: 5px;
+    font-size: 30px;
+
+}
+
