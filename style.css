@@ -8,43 +8,53 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     flex-direction: column;
-    gap: 35px;
     justify-content: center;
     align-items: center;
+    gap: 40px;
     height: 100vh;
+    background-color: #e7bcde;
 }
 
 #gameboard {
-    width: 600px;
-    height: 600px;
+    width: 450px;
+    height: 450px;
     display: grid;
+    gap: 12px;
     grid-template-rows: 1fr 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-    background-color: pink;
+    background-color: #b8bedd;
 }
 
 #gameboard > * {
-    background-color: white;
-    color: turquoise;
-    font-weight: 900;
+    background-color: #9c89b8;
     border: none;
+    color: #f0e6ef;
+    font-weight: 600;
     font-size: 120px;
+}
+
+#gameboard > *:hover {
+    opacity: 0.75;
 }
 
 #state {
     font-size: 35px;
-    color: black;
+    font-weight: 600;
+    color: #9c89b8;
 }
 
 #reset {
     border: none;
     background: none;
-    background-color: lightblue;
+    background-color: #9c89b8;
+    color: #f0e6ef;
+    font-weight: 600;
     height: 55px;
-    width: 120px;
+    width: 140px;
     border-radius: 5px;
     font-size: 30px;
-
 }
 
+#reset:hover {
+    opacity: 0.75;
+}
